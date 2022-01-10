@@ -1,0 +1,156 @@
+import pandas as pd
+import statsmodels.formula.api as sm
+import statsmodels
+import csv
+
+for i in range(3,4):
+    
+    print(str(2008+4*i))
+    print()
+    
+    with open ("/Users/videogideo/Desktop/PresData.csv", mode="r") as csv_file:
+
+        csvreader = csv.reader(csv_file)
+
+        demVotes = []
+        presApp = []
+        incParty8 = []
+        stVote = []
+        stVote2 = []
+        wal = []
+        ander = []
+        per = []
+        econ = []
+        ACU = []
+        Δleg = []
+        presHome = []
+        presHome2 = []
+        south76 = []
+
+        count = 0
+        for row in csv_file:
+            cells = row.split(",")
+            if count > 200-50*i and count < 401:
+                
+                demVotes.append(float(cells[6]))
+                presApp.append(float(cells[10]))
+                incParty8.append(float(cells[12]))
+                stVote.append(float(cells[8]))
+                stVote2.append(float(cells[9]))
+                wal.append(float(cells[18]))
+                ander.append(float(cells[21]))
+                per.append(float(cells[20]))
+                econ.append(float(cells[16]))
+                ACU.append(float(cells[15]))
+                Δleg.append(float(cells[17]))
+                presHome.append(float(cells[13]))
+                presHome2.append(float(cells[14]))
+                south76.append(float(cells[19]))
+
+            count += 1
+
+    df = pd.DataFrame({"demVotes": demVotes, "presApp": presApp, "incParty8": incParty8, "stVote": stVote,
+        "stVote2":stVote2,"wal": wal, "ander": ander, "per": per, "econ": econ, "ACU": ACU, "Δleg": Δleg,
+        "presHome": presHome, "presHome2": presHome2, "south76": south76})
+
+    '''bigArray = [[]]*50*(9+i)
+    for i in range(50*(9+i)):
+        bigArray[i].append(presApp[i])
+        bigArray[i].append(incParty8[i])
+        bigArray[i].append(stVote[i])
+        bigArray[i].append(stVote2[i])
+        bigArray[i].append(wal[i])
+        bigArray[i].append(ander[i])
+        bigArray[i].append(per[i])
+        bigArray[i].append(econ[i])
+        bigArray[i].append(ACU[i])
+        bigArray[i].append(Δleg[i])
+        bigArray[i].append(presHome[i])
+        bigArray[i].append(presHome2[i])
+        bigArray[i].append(south76[i])'''
+    
+    model = sm.ols('demVotes ~ presApp + incParty8 + stVote + stVote2 + wal + ander + per + econ + ACU + Δleg + presHome + presHome2 + south76', df)
+    results = model.fit()
+    
+    '''statsmodels.discrete.discrete_model.Probit(demVotes,bigArray)
+    result_3 = statsmodels.discrete.discrete_model.Probit
+    ProbitResults.summary()
+    print(result_3)'''
+    
+    #display(df)
+    print(results.params)
+    print()
+    
+    sum = 0
+        
+    with open ("/Users/videogideo/Desktop/PresData.csv", mode="r") as csv_file:
+        csvreader = csv.reader(csv_file)
+        
+        count = 0
+        for row in csv_file:
+            cells = row.split(",")
+            cells[23] = cells[23][:-1]
+            if count > 150-50*i and count < 201-50*i:
+                
+                stDemVote = results.params.Intercept
+                    
+                stDemVote += results.params.presApp*float(cells[10])
+                stDemVote += results.params.incParty8*float(cells[12])
+                stDemVote += results.params.stVote*float(cells[8])
+                stDemVote += results.params.stVote2*float(cells[9])
+                stDemVote += results.params.wal*float(cells[18])
+                stDemVote += results.params.ander*float(cells[21])
+                stDemVote += results.params.per*float(cells[20])
+                stDemVote += results.params.econ*float(cells[16])
+                stDemVote += results.params.ACU*float(cells[15])
+                stDemVote += results.params.Δleg*float(cells[17])
+                stDemVote += results.params.presHome*float(cells[13])
+                stDemVote += results.params.presHome2*float(cells[14])
+                stDemVote += results.params.south76*float(cells[19])
+                
+                '''stDemVote = 47.366
+                
+                stDemVote += 0.413*float(cells[10]) #pres approval 
+                stDemVote += -1.879*float(cells[12]) #incumbant party 2
+                stDemVote += 0.724*float(cells[8]) #state vote 4 
+                stDemVote += 0.117*float(cells[9])
+                stDemVote += -0.211*float(cells[18])
+                stDemVote += 0.527*float(cells[21])
+                stDemVote += -0.820*float(cells[20])
+                stDemVote += 0.212*float(cells[16])
+                stDemVote += -0.017*float(cells[15])
+                stDemVote += 0.079*float(cells[17])
+                stDemVote += 4.834*float(cells[13])
+                stDemVote += -3.036*float(cells[14])
+                stDemVote += 14.021*float(cells[19])'''
+                
+                '''if cells[1] == "Alabama":
+                    print(0.413*float(cells[10])) #pres approval 
+                    print(-1.879*float(cells[12])) #incumbant party 2
+                    print(0.724*float(cells[8])) #state vote 4 
+                    print(0.117*float(cells[9]))
+                    print(-0.211*float(cells[18]))
+                    print(0.527*float(cells[21]))
+                    print(-0.820*float(cells[20]))
+                    print(0.212*float(cells[16]))
+                    print(-0.017*float(cells[15]))
+                    print(0.079*float(cells[17]))
+                    print(4.834*float(cells[13]))
+                    print(-3.036*float(cells[14]))
+                    print(14.021*float(cells[19]))'''
+                
+                with open ("/Users/videogideo/Desktop/PresData2020x.csv", mode="r") as csv_file2:
+                    csvreader2 = csv.reader(csv_file2)
+
+                    for state in csv_file2:
+                        cells2 = state.split(",")
+                        
+                        if cells2[2] == cells[1]:
+                            target = float(cells2[3])
+                
+                print(cells[1]+"    \t"+str(stDemVote))
+            
+                
+            count +=1
+
+    print()
